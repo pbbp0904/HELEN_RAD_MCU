@@ -3,7 +3,18 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <QDebug>
+#include "circularq.h"
+#include "hamming.h"
 
+#define ASCIIZERO 0x30
+
+#define ONES57 0x01FFFFFFFFFFFFFF
+
+#define FILESIZE_BITS 10000000
+
+#define NUM_WRITES (FILESIZE_BITS/1088)
+
+#define WRITE_ARRAY_LENGTH 20
 
 Writer::Writer()
 {
@@ -39,7 +50,7 @@ void Writer::DCCPolling(){
 }
 
 
-
+/*
 void Writer::DCCPoll(){
     fpga->ReadSet(1);
 
@@ -95,14 +106,124 @@ void Writer::DCCPoll(){
     }
 }
 
+*/
+
+void Writer::DCCPoll(){
+    fpga->ReadSet(1);
+	que.EnQEmpty(&buff);//add buff to front of que
+    while(1)
+	{
+        // Reading Data
+        fpga->ReadSet(0);
+        fpga->DataRead(buff);//read data into buff
+        fpga->ReadSet(1);
+		if((!IsNewData(buff))&&!que.OneOrLess())
+		{
+			que.GetFront(&buff);//gets value off the front of the que
+			WriteSD(&buff);//todo make this function
+			que.DeQueue();
+		}
+		else if(IsNewData(buff))
+		{
+			if(que.IsFull())
+			{
+			que.GetFront(&buff);//gets value off the front of the que
+			WriteSD(&buff);//todo make this function
+			que.DeQueue();
+			}
+			EnQEmpty(&buff);
+		}
+	}
+
+}
+bool Writer::IsNewData(fpga_data * data)
+{
+	if(data->data[31]==0xffffffff)
+		return 0;
+	return 1;
+}
+
+void Writer::WriteSD(fpga_data * data)
+{
+	unsigned long long wa[WRITE_ARRAY_LENGTH];
+	Format57(data,wa);//formats the data into array of 57 bit data to encode
+	
+	static unsigned long long numwrites=0;//stores the number of writes that have happend
+	numwrites++;
+	int fnumber=numwrites/NUM_WRITES;
+	
+	char fname[]="data000.bin\0";
+	
+	GetFName(fnumber,fname);//writes over the last 3 charecters of the array with digits of the number
+	
+	std::ofstream file;
+	file.open(fname,std::ios::binary|std::ios::app);
+	for(int i=0;i<WRITE_ARRAY_LENGTH;i++)
+	{
+		SECDEC57(wa+i);//Encodes the info in a hamming code
+		myfile.write((char *)(wa+i),sizeof(long long));
+	}
+	file.close();
+}
 
 
+//formats fpga_data struct into an array of 57 bit data packets
+void Writer::Format57(fpga_data * data, unsigned long long * arr)
+{
+	int ncopy = 0;
+	int bitshift=0;
+	int aridx=0;
+	unsigned long long copydata;
+	for(int i=0;i<34;i++)
+	{
+		//logic to determine which data from the struct we are copying this time arround
+		if(i<32)
+		{
+		 copydata=data->data[i];
+		}
+		else if(i==32)
+		{
+			copydata==data->pps_count;
+		}
+		else 
+		{
+			copydata = data->time;
+		}
+		
+		ncopy = ncopy+32;//determine the number of bits that have been copied
+		aridx = ncopy / 57;//deterine what index of the copy array we are on
+		bitshift = ncopy % 57;//determine the starting bit of the array we are on
+		arr[arridx] |= ONES57 & (copydata<<bitshift); //copies the last 57 bits to the appropriot location
+		
+		if(bitshift>=(57-32))//check if any bits were not copied
+		{
+			bitshift=bitshift-(57-32);
+			arr[arridx+1]|=copydata<<bitshift;
+		}
+	}
+	
+}
 
+//alters filename to have the last 3 digits of fnumber
+void Writer::GetFName(int fnumber,char * fname)
+{
+	int digi0=fnumber%10;
+	int digi1=(fnumber/10)%10;
+	int digi2=(fnumber/100)%10;
+	
+	fname[4] = Digi2Char(digi2);
+	fname[5] = Digi2Char(digi1);
+	fname[6] = Digi2Char(digi0);
+	
+	
+}
 
-
-
-
-
+//converts a digit to its correstponding charicter
+char Writer::Digi2Char(int digit)
+{
+	char dchar = (char)(ASCIIZERO+(digit%10));
+	return dchar;
+}
 //    write_place = 0;
 //    read_place = 0;
 

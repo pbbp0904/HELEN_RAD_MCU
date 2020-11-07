@@ -17,7 +17,7 @@
 #define FPGA_SW_PIO_BASE 0x4000
 #define FPGA_DCC_DATA_0_BASE 0x5000
 #define FPGA_DCC_DATA_1_BASE 0x6000
-#define FPGA_DCC_DATA_2_BASE 0x01e0
+#define FPGA_DCC_DATA_2_BASE 0x01e0 
 #define FPGA_DCC_DATA_3_BASE 0x01d0
 #define FPGA_DCC_DATA_4_BASE 0x01c0
 #define FPGA_DCC_DATA_5_BASE 0x01b0
@@ -131,7 +131,7 @@ bool FPGA::Init()
 
     return bSuccess;
 }
-
+/*
 bool FPGA::DataRead(buff_t *buffer)
 {
     buffer->pps_count = *(uint32_t *)m_pps_count_base;
@@ -170,6 +170,51 @@ bool FPGA::DataRead(buff_t *buffer)
     buffer->data_29 = *(uint32_t *)m_dcc_data_29_base;
     buffer->data_30 = *(uint32_t *)m_dcc_data_30_base;
     buffer->data_31 = *(uint32_t *)m_dcc_data_31_base;
+
+
+
+    return true;
+}
+*/
+
+bool FPGA::DataRead(fpga_data * buffer)
+{
+	buffer->pps_count = *(uint32_t *)m_pps_count_base;
+    buffer->time = *(uint32_t *)m_dcc_time_base;
+
+
+    buffer->data[0] = *(uint32_t *)m_dcc_data_0_base;
+    buffer->data[1] = *(uint32_t *)m_dcc_data_1_base;
+    buffer->data[2] = *(uint32_t *)m_dcc_data_2_base;
+    buffer->data[3] = *(uint32_t *)m_dcc_data_3_base;
+    buffer->data[4] = *(uint32_t *)m_dcc_data_4_base;
+    buffer->data[5] = *(uint32_t *)m_dcc_data_5_base;
+    buffer->data[6] = *(uint32_t *)m_dcc_data_6_base;
+    buffer->data[7] = *(uint32_t *)m_dcc_data_7_base;
+    buffer->data[8] = *(uint32_t *)m_dcc_data_8_base;
+    buffer->data[9] = *(uint32_t *)m_dcc_data_9_base;
+    buffer->data[10] = *(uint32_t *)m_dcc_data_10_base;
+    buffer->data[11] = *(uint32_t *)m_dcc_data_11_base;
+    buffer->data[12] = *(uint32_t *)m_dcc_data_12_base;
+    buffer->data[13] = *(uint32_t *)m_dcc_data_13_base;
+    buffer->data[14] = *(uint32_t *)m_dcc_data_14_base;
+    buffer->data[15] = *(uint32_t *)m_dcc_data_15_base;
+    buffer->data[16] = *(uint32_t *)m_dcc_data_16_base;
+    buffer->data[17] = *(uint32_t *)m_dcc_data_17_base;
+    buffer->data[18] = *(uint32_t *)m_dcc_data_18_base;
+    buffer->data[19] = *(uint32_t *)m_dcc_data_19_base;
+    buffer->data[20] = *(uint32_t *)m_dcc_data_20_base;
+    buffer->data[21] = *(uint32_t *)m_dcc_data_21_base;
+    buffer->data[22] = *(uint32_t *)m_dcc_data_22_base;
+    buffer->data[23] = *(uint32_t *)m_dcc_data_23_base;
+    buffer->data[24] = *(uint32_t *)m_dcc_data_24_base;
+    buffer->data[25] = *(uint32_t *)m_dcc_data_25_base;
+    buffer->data[26] = *(uint32_t *)m_dcc_data_26_base;
+    buffer->data[27] = *(uint32_t *)m_dcc_data_27_base;
+    buffer->data[28] = *(uint32_t *)m_dcc_data_28_base;
+    buffer->data[29] = *(uint32_t *)m_dcc_data_29_base;
+    buffer->data[30] = *(uint32_t *)m_dcc_data_30_base;
+    buffer->data[31] = *(uint32_t *)m_dcc_data_31_base;
 
 
 

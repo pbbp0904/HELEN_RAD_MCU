@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
+/*
 struct buff_t
 {
     int32_t pps_count;
@@ -62,7 +62,12 @@ struct buff_t
 //        return true;
 //    }
 };
-
+*/
+typedef struct{
+	int32_t pps_count;
+	int32_t time;
+	int32_t data[32];
+} fpga_data;
 
 
 class FPGA
@@ -71,7 +76,7 @@ public:
     FPGA();
     ~FPGA();
 
-    bool DataRead(buff_t *buffer);
+    bool DataRead(fpga_data *buffer);
     bool LedSet(int mask);
     bool SwitchRead(uint16_t *mask);
     bool DccPeakRead(uint32_t *mask);
