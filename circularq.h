@@ -28,7 +28,7 @@ class CircularQ{
 	/*
 		deletes value from the front of the queue
 	*/
-	void DeQueue();
+	bool DeQueue();
 	
 	private:
 	bool empty;
@@ -41,13 +41,6 @@ class CircularQ{
 };
 
 
-
-
-//stand in while I test it off the HPS
-struct buff_t
-{
-	int value;
-};
 
 
 #endif

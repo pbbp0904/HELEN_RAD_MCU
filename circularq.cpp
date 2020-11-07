@@ -1,25 +1,31 @@
 
+#include <iostream>
 #include "circularq.h"
 #include <stdlib.h>
+
 //const unsigned long ITEMSIZE = (sizeof(struct buff_t));
 
 CircularQ::CircularQ()
 {
 	base =(struct buff_t*) malloc(ITEMSIZE*BUFFSIZE);
-	end=base+ITEMSIZE*BUFFSIZE;
+	end=base+(BUFFSIZE-1);
 	front=base;
-	rear=decrement(base);
+	rear=base;
 	empty=1;
+	
+	//printf("the base address is %lX\n",base);
+	//printf("The end address is %lX\n",end);
+	//printf("The itemsize is %lX\n",ITEMSIZE);
 }
 CircularQ::~CircularQ()
 {
-	delete base;
+	free(base);
 }
 
 //check if the buffer is full
 bool CircularQ::IsFull()
 {
-	bool full=(((struct buff_t*)increment(front))==rear);
+	bool full=(increment(front)==rear);
 	return full;
 }
 
@@ -39,7 +45,7 @@ struct buff_t *  CircularQ::increment(buff_t *pointer)
 	}
 	else
 	{
-		return (pointer+ITEMSIZE);
+		return (pointer+1);
 	}
 }
 struct buff_t * CircularQ::decrement(buff_t *pointer)
@@ -50,7 +56,7 @@ struct buff_t * CircularQ::decrement(buff_t *pointer)
 	}
 	else
 	{
-		return (pointer-ITEMSIZE);
+		return (pointer-1);
 	}
 }
 
@@ -76,15 +82,21 @@ struct buff_t * CircularQ::decrement(buff_t *pointer)
 		return 1;
 	}
 	
-	//deletes item off front of queue
-	void CircularQ::DeQueue()
+	//deletes item off front of queue returns zero if empty
+	bool CircularQ::DeQueue()
 	{
+		if (empty)
+		{
+			return 0;
+		}
 		if(front==rear)
 		{
 			empty=1;
-			return;
+			return 1;
 		}
-		decrement(front);
+		
+		front=decrement(front);
+		return 1;
 	}
 	
 	/*
@@ -92,7 +104,10 @@ struct buff_t * CircularQ::decrement(buff_t *pointer)
 	*/
 	bool CircularQ::GetFront(struct buff_t **emptyPointer)
 	{
+		if(empty)
+			return 0;
 		*emptyPointer=front;
+		return 1;
 	}
 	
 
