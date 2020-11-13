@@ -51,6 +51,7 @@ void Writer::DCCPoll(){
         if(!(buff[0].data_0==data_0_old) && !(buff[0].data_1==data_1_old) && !(buff[0].data_2==data_2_old) && !(buff[0].data_3==data_3_old) && !(buff[0].data_4==data_4_old) && !(buff[0].data_5==data_5_old)){
             //fwrite(&buff[0], 4, 34, datafile);
             //fwrite(&buff[0].data_4, 4, 1, datafile);
+			qDebug() << "Pulse Detected";
             fprintf(datafile, "%d,", buff[0].pps_count);
             fprintf(datafile, "%d,", buff[0].time);
             fprintf(datafile, "%d,", buff[0].data_0);
