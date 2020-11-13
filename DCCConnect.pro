@@ -12,12 +12,16 @@ TEMPLATE = app
 SOURCES += main.cpp \
     fpga.cpp \
     hps.cpp \
-    writer.cpp
+    writer.cpp \
+    circularq.cpp \
+    hamming.cpp
 
 HEADERS += \
     fpga.h \
     hps.h \
-    writer.h
+    writer.h \
+    circularq.h \
+    hamming.h
 
 
 INCLUDEPATH += /home/terasic/intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include

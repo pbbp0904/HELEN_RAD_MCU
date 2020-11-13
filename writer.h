@@ -51,6 +51,7 @@ private:
     int32_t data_3_old;
     int32_t data_4_old;
     int32_t data_5_old;
+    char Digi2Char(int digit);
 
 };
 

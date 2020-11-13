@@ -63,8 +63,9 @@ struct buff_t
 //    }
 };
 */
-typedef struct{
+typedef struct fpga_data{
 	int32_t pps_count;
+    int32_t pps_time;
 	int32_t time;
 	int32_t data[32];
 } fpga_data;
@@ -131,6 +132,7 @@ protected:
     uint8_t *m_dcc_data_31_base;
     uint8_t *m_dcc_time_base;
     uint8_t *m_pps_count_base;
+    uint8_t *m_pps_time_out_base;
 
     bool Init();
 

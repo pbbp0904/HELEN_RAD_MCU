@@ -1,7 +1,7 @@
 #include "writer.h"
 #include <QCoreApplication>
 
-int main(int argc, char *argv[])
+int main()
 {
 //    QCoreApplication a(argc, argv);
 

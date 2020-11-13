@@ -50,6 +50,7 @@
 #define FPGA_PPS_COUNT_OUT_BASE 0x01f0
 #define FPGA_DCC_TIME_OUT_BASE 0x7000
 #define FPGA_READ_PIO_BASE 0x8000
+#define FPGA_PPS_TIME_OUT_BASE 0x9000
 
 // ///////////////////////////////////////
 // memory map
@@ -124,7 +125,7 @@ bool FPGA::Init()
 
             m_dcc_time_base    = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_DCC_TIME_OUT_BASE) & (unsigned long)(HW_REGS_MASK));
             m_pps_count_base   = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_PPS_COUNT_OUT_BASE) & (unsigned long)(HW_REGS_MASK));
-
+            m_pps_time_out_base  = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_PPS_TIME_OUT_BASE) & (unsigned long)(HW_REGS_MASK));
             bSuccess = true;
         }
     }
@@ -181,6 +182,7 @@ bool FPGA::DataRead(fpga_data * buffer)
 {
 	buffer->pps_count = *(uint32_t *)m_pps_count_base;
     buffer->time = *(uint32_t *)m_dcc_time_base;
+    buffer->pps_time = *(uint32_t *)m_pps_time_out_base;
 
 
     buffer->data[0] = *(uint32_t *)m_dcc_data_0_base;

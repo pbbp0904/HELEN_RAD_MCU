@@ -10,11 +10,11 @@
 
 #define ONES57 0x01FFFFFFFFFFFFFF
 
-#define FILESIZE_BITS 10000000
+#define FILESIZE_BYTES 1000000
 
-#define NUM_WRITES (FILESIZE_BITS/1088)
+#define NUM_WRITES (FILESIZE_BYTES/144)
 
-#define WRITE_ARRAY_LENGTH 20
+#define DEBUG
 
 Writer::Writer()
 {
@@ -44,6 +44,9 @@ void Writer::DCCPolling(){
 
     fclose(datafile);
     datafile = fopen("data", "a");
+    #ifdef DEBUG
+    qDebug()<<"launching DCC poll\n";
+    #endif
     DCCPoll();
 
 
@@ -111,99 +114,83 @@ void Writer::DCCPoll(){
 
 void Writer::DCCPoll(){
     fpga->ReadSet(1);
-	que.EnQEmpty(&buff);//add buff to front of que
+    que.EnQEmpty(&cdata);//add buff to front of que
     while(1)
 	{
         // Reading Data
         fpga->ReadSet(0);
-        fpga->DataRead(buff);//read data into buff
+        fpga->DataRead(cdata);//read data into buff
         fpga->ReadSet(1);
-		if((!IsNewData(buff))&&!que.OneOrLess())
+        if((!IsNewData(cdata))&&!que.OneOrLess())
 		{
-			que.GetFront(&buff);//gets value off the front of the que
-			WriteSD(&buff);//todo make this function
+            que.GetFront(&cdata);//gets value off the front of the que
+            #ifdef DEBUG
+            qDebug()<<"printing data at time"<< cdata->time <<" because there is no new data\n";
+            #endif
+            WriteSD(cdata);//writes the data to the sd card
 			que.DeQueue();
+            que.GetRear(&cdata);//restores the pointer value
 		}
-		else if(IsNewData(buff))
+        else if(IsNewData(cdata))
 		{
+            #ifdef DEBUG
+            qDebug()<<"new data at time "<<cdata->time<<endl;
+            #endif
 			if(que.IsFull())
 			{
-			que.GetFront(&buff);//gets value off the front of the que
-			WriteSD(&buff);//todo make this function
+            #ifdef DEBUG
+            qDebug()<<"buffer has filled up\n";
+            #endif
+            que.GetFront(&cdata);//gets value off the front of the que
+            WriteSD(cdata);
 			que.DeQueue();
 			}
-			EnQEmpty(&buff);
+            que.EnQEmpty(&cdata);
 		}
 	}
 
 }
 bool Writer::IsNewData(fpga_data * data)
 {
-	if(data->data[31]==0xffffffff)
+    if(data->data[0]==(int32_t)0xffffffff)
 		return 0;
 	return 1;
 }
 
 void Writer::WriteSD(fpga_data * data)
 {
-	unsigned long long wa[WRITE_ARRAY_LENGTH];
-	Format57(data,wa);//formats the data into array of 57 bit data to encode
-	
-	static unsigned long long numwrites=0;//stores the number of writes that have happend
-	numwrites++;
-	int fnumber=numwrites/NUM_WRITES;
-	
+    static uint64_t numwrites=0;
+
+
 	char fname[]="data000.bin\0";
-	
-	GetFName(fnumber,fname);//writes over the last 3 charecters of the array with digits of the number
+
+
+
+    GetFName(numwrites/NUM_WRITES, fname);//get the file number we are on
 	
 	std::ofstream file;
 	file.open(fname,std::ios::binary|std::ios::app);
-	for(int i=0;i<WRITE_ARRAY_LENGTH;i++)
+
+    //write the data
+    for(int i=0;i<32;i++)
 	{
-		SECDEC57(wa+i);//Encodes the info in a hamming code
-		myfile.write((char *)(wa+i),sizeof(long long));
+
+        file.write((char *)(data->data+i),sizeof(int32_t));
 	}
+
+    file.write((char *)(data->pps_count),sizeof(int32_t));
+
+    file.write((char *)(data->pps_time),sizeof(int32_t));
+
+    file.write((char *)(data->time),sizeof(int32_t));
+
+    static uint32_t ones = 0xFFFFFFFF;
+
+    file.write((char *)(ones),sizeof(int32_t));//pad file with ones
 	file.close();
+    numwrites++;
 }
 
-
-//formats fpga_data struct into an array of 57 bit data packets
-void Writer::Format57(fpga_data * data, unsigned long long * arr)
-{
-	int ncopy = 0;
-	int bitshift=0;
-	int aridx=0;
-	unsigned long long copydata;
-	for(int i=0;i<34;i++)
-	{
-		//logic to determine which data from the struct we are copying this time arround
-		if(i<32)
-		{
-		 copydata=data->data[i];
-		}
-		else if(i==32)
-		{
-			copydata==data->pps_count;
-		}
-		else 
-		{
-			copydata = data->time;
-		}
-		
-		ncopy = ncopy+32;//determine the number of bits that have been copied
-		aridx = ncopy / 57;//deterine what index of the copy array we are on
-		bitshift = ncopy % 57;//determine the starting bit of the array we are on
-		arr[arridx] |= ONES57 & (copydata<<bitshift); //copies the last 57 bits to the appropriot location
-		
-		if(bitshift>=(57-32))//check if any bits were not copied
-		{
-			bitshift=bitshift-(57-32);
-			arr[arridx+1]|=copydata<<bitshift;
-		}
-	}
-	
-}
 
 //alters filename to have the last 3 digits of fnumber
 void Writer::GetFName(int fnumber,char * fname)

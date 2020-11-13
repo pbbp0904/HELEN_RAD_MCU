@@ -114,8 +114,16 @@ fpga_data * CircularQ::decrement(fpga_data *pointer)
 		return 1;
 	}
 	
-
-
+   /*
+    * gets value at the rear of the queue
+    */
+    bool CircularQ::GetRear(fpga_data **emptyPointer)
+    {
+        if(empty)
+            return 0;
+        *emptyPointer=rear;
+        return 1;
+    }
 
 
 
