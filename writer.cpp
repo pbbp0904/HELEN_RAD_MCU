@@ -12,7 +12,7 @@
 
 #define FILESIZE_BYTES 1000000
 
-#define NUM_WRITES (FILESIZE_BYTES/144)
+#define NUM_WRITES (FILESIZE_BYTES/140)
 
 #define DEBUG
 
@@ -159,7 +159,7 @@ bool Writer::IsNewData(fpga_data * data)
 
 void Writer::WriteSD(fpga_data * data)
 {
-    static uint64_t numwrites=0;
+     static uint64_t numwrites=0;
 
 
 	char fname[]="data000.bin\0";
@@ -170,7 +170,10 @@ void Writer::WriteSD(fpga_data * data)
 	
 	std::ofstream file;
 	file.open(fname,std::ios::binary|std::ios::app);
-
+	
+	static uint32_t ones = 0xFFFFFFFF;
+    file.write((char *)(&ones),sizeof(int32_t));//pad file with ones
+	
     //write the data
     for(int i=0;i<32;i++)
 	{
@@ -178,15 +181,12 @@ void Writer::WriteSD(fpga_data * data)
         file.write((char *)(data->data+i),sizeof(int32_t));
 	}
 
-    file.write((char *)(data->pps_count),sizeof(int32_t));
+    file.write((char *)(&(data->pps_count)),sizeof(int32_t));
 
-    file.write((char *)(data->pps_time),sizeof(int32_t));
+    file.write((char *)(&(data->pps_time)),sizeof(int32_t));
 
-    file.write((char *)(data->time),sizeof(int32_t));
+    file.write((char *)(&(data->time)),sizeof(int32_t));
 
-    static uint32_t ones = 0xFFFFFFFF;
-
-    file.write((char *)(ones),sizeof(int32_t));//pad file with ones
 	file.close();
     numwrites++;
 }
