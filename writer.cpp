@@ -22,7 +22,7 @@ Writer::~Writer()
 void Writer::DCCPolling(){
 
     //Creating Files
-    datafile = fopen("data", "a");
+    datafile = fopen("data", "a+b");
 
     qDebug() << "Starting Data Collection...";
 
@@ -32,7 +32,7 @@ void Writer::DCCPolling(){
     qDebug() << "result of write: " << fwrite(&StartUp, 4, 1, datafile);
 
     fclose(datafile);
-    datafile = fopen("data", "a");
+    datafile = fopen("data", "a+b");
     DCCPoll();
 
 
@@ -52,8 +52,14 @@ void Writer::DCCPoll(){
         if(!(buff[0].data_0==data_0_old) && !(buff[0].data_1==data_1_old) && !(buff[0].data_2==data_2_old) && !(buff[0].data_3==data_3_old) && !(buff[0].data_4==data_4_old) && !(buff[0].data_5==data_5_old)){
             //fwrite(&buff[0], 4, 34, datafile);
             //fwrite(&buff[0].data_4, 4, 1, datafile);
+<<<<<<< HEAD
             qDebug() << "Writing Data!";
             fprintf(datafile, "%d,", buff[0].pps_count);
+=======
+			//qDebug() << "Pulse Detected";
+			
+			fprintf(datafile, "%d,", buff[0].pps_count);
+>>>>>>> 87346cfd614ab7e829367a135193e191804a336f
             fprintf(datafile, "%d,", buff[0].time);
             fprintf(datafile, "%d,", buff[0].data_0);
             fprintf(datafile, "%d,", buff[0].data_1);
