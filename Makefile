@@ -15,7 +15,7 @@ CXX           = arm-linux-gnueabihf-g++
 DEFINES       = -DQT_NO_DEBUG -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -std=c++0x -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I../../../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include -I../../../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av -I/opt/qt5/qt5.5.1-intel-soc/include -I/opt/qt5/qt5.5.1-intel-soc/include/QtCore -I. -I/opt/qt5/qt5.5.1/mkspecs/linux-arm-gnueabihf-g++
+INCPATH       = -I. -I../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include -I../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av -I/home/nathan/intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include -I/home/nathan/intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av -I/opt/qt5/qt5.5.1-intel-soc/include -I/opt/qt5/qt5.5.1-intel-soc/include/QtCore -I. -I/opt/qt5/qt5.5.1/mkspecs/linux-arm-gnueabihf-g++
 QMAKE         = /opt/qt5/qt5.5.1/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -33,7 +33,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = DCCConnect1.0.0
-DISTDIR = /home/terasic/Desktop/HELEN/software/HPS_scripts/.tmp/DCCConnect1.0.0
+DISTDIR = /home/terasic/Documents/HELEN_RAD_MCU/.tmp/DCCConnect1.0.0
 LINK          = arm-linux-gnueabihf-g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/usr/local/Qt-5.5.1/lib
 LIBS          = $(SUBLIBS) -L/opt/qt5/qt5.5.1-intel-soc/lib -lQt5Core -lpthread 
@@ -486,9 +486,9 @@ fpga.o: fpga.cpp fpga.h \
 		/opt/qt5/qt5.5.1-intel-soc/include/QtCore/qpoint.h \
 		/opt/qt5/qt5.5.1-intel-soc/include/QtCore/qset.h \
 		/opt/qt5/qt5.5.1-intel-soc/include/QtCore/qcontiguouscache.h \
-		../../../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/socal.h \
-		../../../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/hps.h \
-		../../../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/alt_gpio.h
+		../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/socal.h \
+		../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/hps.h \
+		../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/alt_gpio.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o fpga.o fpga.cpp
 
 hps.o: hps.cpp /opt/qt5/qt5.5.1-intel-soc/include/QtCore/QDebug \
@@ -558,9 +558,9 @@ hps.o: hps.cpp /opt/qt5/qt5.5.1-intel-soc/include/QtCore/QDebug \
 		/opt/qt5/qt5.5.1-intel-soc/include/QtCore/qset.h \
 		/opt/qt5/qt5.5.1-intel-soc/include/QtCore/qcontiguouscache.h \
 		hps.h \
-		../../../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/socal.h \
-		../../../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/hps.h \
-		../../../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/alt_gpio.h
+		../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/socal.h \
+		../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/hps.h \
+		../../intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib/include/soc_cv_av/socal/alt_gpio.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o hps.o hps.cpp
 
 writer.o: writer.cpp writer.h \

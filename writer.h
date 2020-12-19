@@ -29,6 +29,8 @@ public:
 
     void SDSave();
 
+    void MakeNewFile(int fileNum);
+
 private:
     HPS *hps;
     FPGA *fpga;
@@ -36,12 +38,15 @@ private:
     uint16_t Status;
     buff_t buff[2];
     time_t now;
-    int32_t data_0_old;
-    int32_t data_1_old;
-    int32_t data_2_old;
-    int32_t data_3_old;
-    int32_t data_4_old;
-    int32_t data_5_old;
+    uint32_t data_0_old;
+    uint32_t data_1_old;
+    uint32_t data_2_old;
+    uint32_t data_3_old;
+    uint32_t data_4_old;
+    uint32_t data_5_old;
+    int32_t writeCount;
+    int32_t maxWriteCount = 700000; //700000 writes is about 100MB per file
+    int32_t fileCount;
 
 };
 

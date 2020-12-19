@@ -8,40 +8,42 @@
 
 struct buff_t
 {
-    int32_t pps_count;
-    int32_t time;
-    int32_t data_0;
-    int32_t data_1;
-    int32_t data_2;
-    int32_t data_3;
-    int32_t data_4;
-    int32_t data_5;
-    int32_t data_6;
-    int32_t data_7;
-    int32_t data_8;
-    int32_t data_9;
-    int32_t data_10;
-    int32_t data_11;
-    int32_t data_12;
-    int32_t data_13;
-    int32_t data_14;
-    int32_t data_15;
-    int32_t data_16;
-    int32_t data_17;
-    int32_t data_18;
-    int32_t data_19;
-    int32_t data_20;
-    int32_t data_21;
-    int32_t data_22;
-    int32_t data_23;
-    int32_t data_24;
-    int32_t data_25;
-    int32_t data_26;
-    int32_t data_27;
-    int32_t data_28;
-    int32_t data_29;
-    int32_t data_30;
-    int32_t data_31;
+    uint32_t pps_count;
+    uint32_t pps_time;
+    uint32_t time;
+    uint32_t data_0;
+    uint32_t data_1;
+    uint32_t data_2;
+    uint32_t data_3;
+    uint32_t data_4;
+    uint32_t data_5;
+    uint32_t data_6;
+    uint32_t data_7;
+    uint32_t data_8;
+    uint32_t data_9;
+    uint32_t data_10;
+    uint32_t data_11;
+    uint32_t data_12;
+    uint32_t data_13;
+    uint32_t data_14;
+    uint32_t data_15;
+    uint32_t data_16;
+    uint32_t data_17;
+    uint32_t data_18;
+    uint32_t data_19;
+    uint32_t data_20;
+    uint32_t data_21;
+    uint32_t data_22;
+    uint32_t data_23;
+    uint32_t data_24;
+    uint32_t data_25;
+    uint32_t data_26;
+    uint32_t data_27;
+    uint32_t data_28;
+    uint32_t data_29;
+    uint32_t data_30;
+    uint32_t data_31;
+    uint32_t delim;
 
 //    bool operator==(const buff_t& b) {
 //        bool result = true;
@@ -124,8 +126,10 @@ protected:
     uint8_t *m_dcc_data_29_base;
     uint8_t *m_dcc_data_30_base;
     uint8_t *m_dcc_data_31_base;
-    uint8_t *m_dcc_time_base;
     uint8_t *m_pps_count_base;
+    uint8_t *m_pps_time_out_base;
+    uint8_t *m_dcc_time_base;
+
 
     bool Init();
 

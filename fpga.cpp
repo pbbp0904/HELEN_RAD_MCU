@@ -50,6 +50,7 @@
 #define FPGA_PPS_COUNT_OUT_BASE 0x01f0
 #define FPGA_DCC_TIME_OUT_BASE 0x7000
 #define FPGA_READ_PIO_BASE 0x8000
+#define FPGA_PPS_TIME_OUT_BASE 0x9000
 
 // ///////////////////////////////////////
 // memory map
@@ -89,6 +90,10 @@ bool FPGA::Init()
 
             m_read_base = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST + FPGA_READ_PIO_BASE) & (unsigned long)(HW_REGS_MASK));
 
+            m_pps_count_base   = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_PPS_COUNT_OUT_BASE) & (unsigned long)(HW_REGS_MASK));
+            m_pps_time_out_base  = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_PPS_TIME_OUT_BASE) & (unsigned long)(HW_REGS_MASK));
+            m_dcc_time_base    = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_DCC_TIME_OUT_BASE) & (unsigned long)(HW_REGS_MASK));
+
             m_dcc_data_0_base  = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_DCC_DATA_0_BASE) &  (unsigned long)(HW_REGS_MASK));
             m_dcc_data_1_base  = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_DCC_DATA_1_BASE) &  (unsigned long)(HW_REGS_MASK));
             m_dcc_data_2_base  = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_DCC_DATA_2_BASE) &  (unsigned long)(HW_REGS_MASK));
@@ -122,8 +127,7 @@ bool FPGA::Init()
             m_dcc_data_30_base = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_DCC_DATA_30_BASE) & (unsigned long)(HW_REGS_MASK));
             m_dcc_data_31_base = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_DCC_DATA_31_BASE) & (unsigned long)(HW_REGS_MASK));
 
-            m_dcc_time_base    = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_DCC_TIME_OUT_BASE) & (unsigned long)(HW_REGS_MASK));
-            m_pps_count_base   = (uint8_t *)virtual_base + ((unsigned long)(ALT_LWFPGASLVS_OFST +  FPGA_PPS_COUNT_OUT_BASE) & (unsigned long)(HW_REGS_MASK));
+
 
             bSuccess = true;
         }
@@ -135,8 +139,8 @@ bool FPGA::Init()
 bool FPGA::DataRead(buff_t *buffer)
 {
     buffer->pps_count = *(uint32_t *)m_pps_count_base;
+    buffer->pps_time = *(uint32_t *)m_pps_time_out_base;
     buffer->time = *(uint32_t *)m_dcc_time_base;
-
 
     buffer->data_0 = *(uint32_t *)m_dcc_data_0_base;
     buffer->data_1 = *(uint32_t *)m_dcc_data_1_base;
@@ -170,6 +174,8 @@ bool FPGA::DataRead(buff_t *buffer)
     buffer->data_29 = *(uint32_t *)m_dcc_data_29_base;
     buffer->data_30 = *(uint32_t *)m_dcc_data_30_base;
     buffer->data_31 = *(uint32_t *)m_dcc_data_31_base;
+
+    buffer->delim   = 0xFFFFFFFF;
 
 
 

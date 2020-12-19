@@ -44,7 +44,7 @@ void Writer::DCCPoll(){
     fpga->ReadSet(1);
     writeCount = 0;
     fileCount = 0;
-
+14804610
     while(1){
         // Reading data from FPGA
         fpga->ReadSet(0);
