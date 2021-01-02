@@ -44,27 +44,23 @@ void Writer::DCCPoll(){
     fpga->ReadSet(1);
     writeCount = 0;
     fileCount = 0;
-
     while(1){
         // Reading data from FPGA
         fpga->ReadSet(0);
-        fpga->DataRead(&buff[0]);
+        fpga->DataRead(&buff[writeCount % BUFFER_SIZE]);
         fpga->ReadSet(1);
 
         //Checking if data is the same as the previous read. If not, write new data to file
-        if(buff[0].data_0 != data_0_old && buff[0].data_1 != data_1_old && buff[0].data_2 != data_2_old && buff[0].data_3 != data_3_old && buff[0].data_4 != data_4_old && buff[0].data_5 != data_5_old){
-            //qDebug() << "Writing Data!!!!";
-            fwrite(&buff[0], 4, 36, datafile); // fwrite writes the values in byte wise little endian
+        if(buff[writeCount % BUFFER_SIZE].pulse_num != pulse_num_old){
 
-            //Setting old data values
-            data_0_old = buff[0].data_0;
-            data_1_old = buff[0].data_1;
-            data_2_old = buff[0].data_2;
-            data_3_old = buff[0].data_3;
-            data_4_old = buff[0].data_4;
-            data_5_old = buff[0].data_5;
+            //Setting old pulse_num value
+            pulse_num_old = buff[writeCount % BUFFER_SIZE].pulse_num;
 
-            writeCount = writeCount + 1;
+            //qDebug() << "Writing Data!!!!" << writeCount;
+            if(writeCount % BUFFER_SIZE == BUFFER_SIZE-1){
+                //qDebug() << "Actually Writing Data!!!!" << writeCount;
+                fwrite(&buff[0], 4, 38*BUFFER_SIZE, datafile); // fwrite writes the values in byte wise little endian
+            }
 
             //Checking if a new file needs to be created
             if(writeCount >= maxWriteCount){
@@ -72,6 +68,8 @@ void Writer::DCCPoll(){
                 MakeNewFile(fileCount);
                 writeCount = 0;
             }
+
+            writeCount = writeCount + 1;
         }
     }
 }
@@ -88,13 +86,86 @@ void Writer::MakeNewFile(int fileNum){
     strcat(filename, fileNumStr);
 
     datafile = fopen(filename, "a+b");
-    qDebug() << "Starting Data Collection...";
+    //qDebug() << "Starting Data Collection...";
     fwrite(&StartUp, 4, 1, datafile);
     fclose(datafile);
 
     datafile = fopen(filename, "a+b");
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void Writer::DCCPoll(){
+//    fpga->ReadSet(1);
+//    writeCount = 0;
+//    fileCount = 0;
+//    while(1){
+//        // Reading data from FPGA
+//        fpga->ReadSet(0);
+//        fpga->DataRead(&buff[0]);
+//        fpga->ReadSet(1);
+
+//        //Checking if data is the same as the previous read. If not, write new data to file
+//        //if(buff[0].data_0 != data_0_old && buff[0].data_1 != data_1_old && buff[0].data_2 != data_2_old && buff[0].data_3 != data_3_old && buff[0].data_4 != data_4_old && buff[0].data_5 != data_5_old){
+//        if(buff[0].pulse_num != pulse_num_old){
+//            //qDebug() << "Writing Data!!!!";
+
+//            fwrite(&buff[0], 4, 38, datafile); // fwrite writes the values in byte wise little endian
+
+//            //Setting old data values
+//            //data_0_old = buff[0].data_0;
+//            //data_1_old = buff[0].data_1;
+//            //data_2_old = buff[0].data_2;
+//            //data_3_old = buff[0].data_3;
+//            //data_4_old = buff[0].data_4;
+//            //data_5_old = buff[0].data_5;
+//            pulse_num_old = buff[0].pulse_num;
+
+//            writeCount = writeCount + 1;
+
+//            //Checking if a new file needs to be created
+//            if(writeCount >= maxWriteCount){
+//                fileCount = fileCount + 1;
+//                MakeNewFile(fileCount);
+//                writeCount = 0;
+//            }
+//        }
+//    }
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

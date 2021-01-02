@@ -11,6 +11,8 @@ struct buff_t
     uint32_t pps_count;
     uint32_t pps_time;
     uint32_t time;
+    uint32_t pulse_num;
+    uint32_t buff_diff;
     uint32_t data_0;
     uint32_t data_1;
     uint32_t data_2;
@@ -44,6 +46,7 @@ struct buff_t
     uint32_t data_30;
     uint32_t data_31;
     uint32_t delim;
+
 
 //    bool operator==(const buff_t& b) {
 //        bool result = true;
@@ -94,6 +97,12 @@ protected:
 
     uint8_t *m_read_base;
 
+    uint8_t *m_pps_count_base;
+    uint8_t *m_pps_time_out_base;
+    uint8_t *m_dcc_time_base;
+    uint8_t *m_pulse_num_out_base;
+    uint8_t *m_buff_diff_out_base;
+
     uint8_t *m_dcc_data_0_base;
     uint8_t *m_dcc_data_1_base;
     uint8_t *m_dcc_data_2_base;
@@ -126,9 +135,7 @@ protected:
     uint8_t *m_dcc_data_29_base;
     uint8_t *m_dcc_data_30_base;
     uint8_t *m_dcc_data_31_base;
-    uint8_t *m_pps_count_base;
-    uint8_t *m_pps_time_out_base;
-    uint8_t *m_dcc_time_base;
+
 
 
     bool Init();

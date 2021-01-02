@@ -10,6 +10,9 @@
 
 using namespace std;
 
+#define BUFFER_SIZE                  256  // 256 buffer size allows a total write size of 9728 which is a multiple of 512
+#define MAX_WRITE_COUNT_PER_FILE  700000  // 700000 writes is about 100MB per file
+
 
 class Writer
 {
@@ -36,7 +39,7 @@ private:
     FPGA *fpga;
     FILE* datafile;
     uint16_t Status;
-    buff_t buff[2];
+    buff_t buff[BUFFER_SIZE];
     time_t now;
     uint32_t data_0_old;
     uint32_t data_1_old;
@@ -44,8 +47,9 @@ private:
     uint32_t data_3_old;
     uint32_t data_4_old;
     uint32_t data_5_old;
+    uint32_t pulse_num_old;
     int32_t writeCount;
-    int32_t maxWriteCount = 700000; //700000 writes is about 100MB per file
+    int32_t maxWriteCount = MAX_WRITE_COUNT_PER_FILE;
     int32_t fileCount;
 
 };
