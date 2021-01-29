@@ -10,8 +10,9 @@
 
 using namespace std;
 
-#define BUFFER_SIZE                  256  // 256 buffer size allows a total write size of 9728 which is a multiple of 512
-#define MAX_WRITE_COUNT_PER_FILE  700000  // 700000 writes is about 100MB per file
+#define BUFFER_SIZE                 16  // write buffer 5   times per file LYSO save rate
+//#define BUFFER_SIZE               4096    // write buffer 160 times per file CLYC save rate
+#define MAX_WRITE_COUNT_PER_FILE  655360  // 655360 is about 100MB per file
 
 
 class Writer

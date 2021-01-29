@@ -60,6 +60,7 @@ void Writer::DCCPoll(){
             if(writeCount % BUFFER_SIZE == BUFFER_SIZE-1){
                 //qDebug() << "Actually Writing Data!!!!" << writeCount;
                 fwrite(&buff[0], 4, 38*BUFFER_SIZE, datafile); // fwrite writes the values in byte wise little endian
+                //fflush(datafile);
             }
 
             //Checking if a new file needs to be created
