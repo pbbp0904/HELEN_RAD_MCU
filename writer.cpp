@@ -42,7 +42,7 @@ void Writer::DCCPolling(){
 
 void Writer::DCCPoll(){
 	
-	circularq buffer;
+    CircularQ buffer;
 	buff_t * cdata;
 	buffer.EnQEmpty(&cdata);
 	
@@ -66,7 +66,7 @@ void Writer::DCCPoll(){
         }
 		if(!isnew || buffer.IsFull())
 		{
-			GetFront(&cdata);
+            buffer.GetFront(&cdata);
 			fwrite(cdata, 4,38, datafile); //writes the data
 			
 			//Checking if a new file needs to be created
