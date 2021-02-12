@@ -4,7 +4,7 @@
 
 #define BUFFSIZE 10
 
-#define ITEMSIZE (sizeof(fpga_data))
+#define ITEMSIZE (sizeof(buff_t))
 
 #include "fpga.h"
 
@@ -22,12 +22,12 @@ class CircularQ{
 		takes an empty pointer to a buff pointer then sets its value to the rear value on the queue
 		you may write to the return pointer to write to the the queue. returns 0 if full.
 	*/
-    bool EnQEmpty(struct fpga_data** emptyPointer);
+    bool EnQEmpty(struct buff_t** emptyPointer);
 	
 	/*
 		returns the value in the front of the queue.
 	*/
-    bool GetFront(struct fpga_data** emptyPointer);
+    bool GetFront(struct buff_t** emptyPointer);
 	
 	/*
 		deletes value from the front of the queue
@@ -35,16 +35,16 @@ class CircularQ{
 	bool DeQueue();
 	
 
-    bool GetRear(fpga_data **emptyPointer);
+    bool GetRear(buff_t **emptyPointer);
 
 	private:
 	bool empty;
-    fpga_data * increment(fpga_data *pointer);
-    fpga_data * decrement(fpga_data *pointer);
-	fpga_data * base;
-	fpga_data * end;
-	fpga_data * front;
-	fpga_data * rear;
+    buff_t * increment(buff_t *pointer);
+    buff_t * decrement(buff_t *pointer);
+	buff_t * base;
+	buff_t * end;
+	buff_t * front;
+	buff_t * rear;
 };
 
 

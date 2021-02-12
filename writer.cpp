@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <QDebug>
-
+#include "circularq.h"
 
 Writer::Writer()
 {
@@ -41,37 +41,44 @@ void Writer::DCCPolling(){
 
 
 void Writer::DCCPoll(){
+	
+	circularq buffer;
+	buff_t * cdata;
+	buffer.EnQEmpty(&cdata);
+	
     fpga->ReadSet(1);
     writeCount = 0;
     fileCount = 0;
+	bool isnew;
     while(1){
         // Reading data from FPGA
         fpga->ReadSet(0);
-        fpga->DataRead(&buff[writeCount % BUFFER_SIZE]);
+        fpga->DataRead(cdata);
         fpga->ReadSet(1);
-
-        //Checking if data is the same as the previous read. If not, write new data to file
-        if(buff[writeCount % BUFFER_SIZE].pulse_num != pulse_num_old){
-
+		
+		isnew = cdata->pulse_num != pulse_num_old; 
+		
+        if(isnew){
+			
             //Setting old pulse_num value
-            pulse_num_old = buff[writeCount % BUFFER_SIZE].pulse_num;
-
-            //qDebug() << "Writing Data!!!!" << writeCount;
-            if(writeCount % BUFFER_SIZE == BUFFER_SIZE-1){
-                //qDebug() << "Actually Writing Data!!!!" << writeCount;
-                fwrite(&buff[0], 4, 38*BUFFER_SIZE, datafile); // fwrite writes the values in byte wise little endian
-                //fflush(datafile);
-            }
-
-            //Checking if a new file needs to be created
+            pulse_num_old = cdata->pulse_num;
+			buffer.EnQEmpty(&cdata);
+        }
+		if(!isnew || buffer.IsFull())
+		{
+			GetFront(&cdata);
+			fwrite(cdata, 4,38, datafile); //writes the data
+			
+			//Checking if a new file needs to be created
             if(writeCount >= maxWriteCount){
                 fileCount = fileCount + 1;
                 MakeNewFile(fileCount);
                 writeCount = 0;
             }
-
-            writeCount = writeCount + 1;
-        }
+			writeCount = writeCount + 1;
+			buffer.GetRear(&cdata);
+		}
+		
     }
 }
 

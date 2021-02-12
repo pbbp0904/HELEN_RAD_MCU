@@ -3,11 +3,11 @@
 #include "circularq.h"
 #include <stdlib.h>
 
-//const unsigned long ITEMSIZE = (sizeof(struct fpga_data));
+//const unsigned long ITEMSIZE = (sizeof(struct buff_t));
 
 CircularQ::CircularQ()
 {
-	base =(fpga_data*) malloc(ITEMSIZE*BUFFSIZE);
+	base =(buff_t*) malloc(ITEMSIZE*BUFFSIZE);
 	end=base+(BUFFSIZE-1);
 	front=base;
 	rear=base;
@@ -41,7 +41,7 @@ bool CircularQ::OneOrLess()
 	return one;
 }
 
-fpga_data *  CircularQ::increment(fpga_data *pointer)
+buff_t *  CircularQ::increment(buff_t *pointer)
 {
 	if(pointer==end)
 	{
@@ -52,7 +52,7 @@ fpga_data *  CircularQ::increment(fpga_data *pointer)
 		return (pointer+1);
 	}
 }
-fpga_data * CircularQ::decrement(fpga_data *pointer)
+buff_t * CircularQ::decrement(buff_t *pointer)
 {
 	if(pointer==base)
 	{
@@ -68,7 +68,7 @@ fpga_data * CircularQ::decrement(fpga_data *pointer)
 		takes an empty pointer to a buff pointer then sets its value to the rear value on the queue
 		you may write to the return pointer to write to the the queue. returns 0 if full.
 	*/
-	bool CircularQ::EnQEmpty(fpga_data **emptyPointer)
+	bool CircularQ::EnQEmpty(buff_t **emptyPointer)
 	{
 		if(empty)
 		{
@@ -106,7 +106,7 @@ fpga_data * CircularQ::decrement(fpga_data *pointer)
 	/*
 		returns the value in the front of the queue.
 	*/
-	bool CircularQ::GetFront(fpga_data **emptyPointer)
+	bool CircularQ::GetFront(buff_t **emptyPointer)
 	{
 		if(empty)
 			return 0;
@@ -117,7 +117,7 @@ fpga_data * CircularQ::decrement(fpga_data *pointer)
    /*
     * gets value at the rear of the queue
     */
-    bool CircularQ::GetRear(fpga_data **emptyPointer)
+    bool CircularQ::GetRear(buff_t **emptyPointer)
     {
         if(empty)
             return 0;
